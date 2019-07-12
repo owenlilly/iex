@@ -67,3 +67,39 @@ func TestDividends(t *testing.T) {
 	}
 	t.Logf("got:\t%v", got)
 }
+
+func TestEarnings(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.Earnings("aapl", nil)
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestEarningsToday(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.EarningsToday()
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestEstimates(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.Estimates("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestFundOwnership(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.FundOwnership("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}

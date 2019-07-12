@@ -3,9 +3,11 @@ package iex
 import (
 	"encoding/json"
 	"errors"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"path"
+	"strconv"
 )
 
 // Constants
@@ -64,6 +66,10 @@ func (c *Client) get(p string, vs *url.Values, v interface{}) error {
 	res, err := c.httpClient.Do(req)
 	if err != nil {
 		return err
+	}
+	if res.StatusCode != http.StatusOK {
+		body, _ := ioutil.ReadAll(res.Body)
+		return errors.New(string(body))
 	}
 	err = json.NewDecoder(res.Body).Decode(v)
 	if err != nil {
@@ -160,7 +166,7 @@ func (c *Client) DelayedQuote(sym string) (*DelayedQuote, error) {
 	return &v, nil
 }
 
-// Dividends returns the 15 minute delayed market quote.
+// Dividends ...
 func (c *Client) Dividends(sym string, rng string) (*Dividends, error) {
 	if sym == "" {
 		return nil, errors.New("invalid argument: sym")
@@ -172,6 +178,66 @@ func (c *Client) Dividends(sym string, rng string) (*Dividends, error) {
 	}
 	v := Dividends{}
 	p := path.Join("stock", sym, "dividends", rng)
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// Earnings returns the earnings data for a given company including the actual
+// EPS, consensus, and fiscal period. Earnings are available quarterly (last
+// 4 quarters).
+func (c *Client) Earnings(sym string, opts *EarningsOpts) (*Earnings, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
+	p := path.Join("stock", sym, "earnings")
+	if opts != nil && opts.Last > 0 {
+		p = path.Join(p, strconv.FormatUint(opts.Last, 10))
+	}
+	if opts != nil && opts.Field != "" {
+		p = path.Join(p, opts.Field)
+	}
+	v := Earnings{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// EarningsToday returns the earnings data for a given company including the actual
+// EPS, consensus, and fiscal period. Earnings are available quarterly (last
+// 4 quarters).
+func (c *Client) EarningsToday() (*EarningsToday, error) {
+	p := path.Join("stock", "market", "earnings-today")
+	v := EarningsToday{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// Estimates provides the latest consensus estimate for the next fiscal period.
+func (c *Client) Estimates(sym string) (*Estimates, error) {
+	p := path.Join("stock", sym, "estimates")
+	v := Estimates{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// FundOwnership returns the top 10 fund holders, meaning any firm not defined
+// as buy-side or sell-side such as mutual funds, pension funds, endowments,
+// investment firms, and other large entities that manage funds on behalf of
+// others.
+func (c *Client) FundOwnership(sym string) (*FundOwnership, error) {
+	p := path.Join("stock", sym, "fund-ownership")
+	v := FundOwnership{}
 	err := c.get(p, nil, &v)
 	if err != nil {
 		return nil, err
