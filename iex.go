@@ -2,7 +2,7 @@ package iex
 
 import (
 	"encoding/json"
-	"fmt"
+	"errors"
 	"net/http"
 	"net/url"
 	"path"
@@ -12,6 +12,14 @@ import (
 const (
 	PeriodAnnual  = "annual"
 	PeriodQuarter = "quarter"
+	Range5Y       = "5y"
+	Range2Y       = "2y"
+	Range1Y       = "1y"
+	RangeYTD      = "ytd"
+	Range6M       = "6m"
+	Range3M       = "3m"
+	Range1M       = "1m"
+	RangeNext     = "next"
 )
 
 // Client is an IEX client.
@@ -67,8 +75,11 @@ func (c *Client) get(p string, vs *url.Values, v interface{}) error {
 // AdvancedStats returns everything in key stats plus additional advanced stats
 // such as EBITDA, ratios, key financial data, and more.
 func (c *Client) AdvancedStats(sym string) (*AdvancedStats, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
 	v := AdvancedStats{}
-	p := fmt.Sprintf("/stock/%v/advanced-stats", sym)
+	p := path.Join("stock", sym, "advanced-stats")
 	err := c.get(p, nil, &v)
 	if err != nil {
 		return nil, err
@@ -79,6 +90,9 @@ func (c *Client) AdvancedStats(sym string) (*AdvancedStats, error) {
 // BalanceSheet pulls balance sheet data. Available quarterly or annually with
 // the default being the last available quarter.
 func (c *Client) BalanceSheet(sym string, opts *BalanceSheetOpts) (*BalanceSheet, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
 	v := BalanceSheet{}
 	vs := url.Values{}
 	if opts != nil && opts.Period != "" {
@@ -87,8 +101,78 @@ func (c *Client) BalanceSheet(sym string, opts *BalanceSheetOpts) (*BalanceSheet
 	if opts != nil && opts.Last != "" {
 		vs.Set("last", opts.Last)
 	}
-	p := fmt.Sprintf("/stock/%v/balance-sheet", sym)
+	p := path.Join("stock", sym, "balance-sheet")
 	err := c.get(p, &vs, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// CashFlow pulls cash flow data. Available quarterly or annually, with the
+// default being the last available quarter.
+func (c *Client) CashFlow(sym string, opts *CashFlowOpts) (*CashFlow, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
+	v := CashFlow{}
+	vs := url.Values{}
+	if opts != nil && opts.Period != "" {
+		vs.Set("period", opts.Period)
+	}
+	if opts != nil && opts.Last != "" {
+		vs.Set("last", opts.Last)
+	}
+	p := path.Join("stock", sym, "cash-flow")
+	err := c.get(p, &vs, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// Company pulls cash flow data. Available quarterly or annually, with the
+// default being the last available quarter.
+func (c *Client) Company(sym string) (*Company, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
+	v := Company{}
+	p := path.Join("stock", sym, "company")
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// DelayedQuote returns the 15 minute delayed market quote.
+func (c *Client) DelayedQuote(sym string) (*DelayedQuote, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
+	v := DelayedQuote{}
+	p := path.Join("stock", sym, "delayed-quote")
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// Dividends returns the 15 minute delayed market quote.
+func (c *Client) Dividends(sym string, rng string) (*Dividends, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
+	switch rng {
+	case Range5Y, Range2Y, Range1Y, RangeYTD, Range6M, Range3M, Range1M, RangeNext:
+	default:
+		return nil, errors.New("invalid argument: rng")
+	}
+	v := Dividends{}
+	p := path.Join("stock", sym, "dividends", rng)
+	err := c.get(p, nil, &v)
 	if err != nil {
 		return nil, err
 	}

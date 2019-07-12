@@ -31,3 +31,39 @@ func TestBalanceSheet(t *testing.T) {
 	}
 	t.Logf("got:\t%v", got)
 }
+
+func TestCashFlow(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.CashFlow("aapl", nil)
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestCompany(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.Company("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestDelayedQuote(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.DelayedQuote("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestDividends(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.Dividends("aapl", Range5Y)
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
