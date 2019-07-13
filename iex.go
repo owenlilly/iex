@@ -211,7 +211,7 @@ func (c *Client) Earnings(sym string, opts *EarningsOpts) (*Earnings, error) {
 // EPS, consensus, and fiscal period. Earnings are available quarterly (last
 // 4 quarters).
 func (c *Client) EarningsToday() (*EarningsToday, error) {
-	p := path.Join("stock", "market", "earnings-today")
+	p := path.Join("stock", "market", "today-earnings")
 	v := EarningsToday{}
 	err := c.get(p, nil, &v)
 	if err != nil {
@@ -238,6 +238,91 @@ func (c *Client) Estimates(sym string) (*Estimates, error) {
 func (c *Client) FundOwnership(sym string) (*FundOwnership, error) {
 	p := path.Join("stock", sym, "fund-ownership")
 	v := FundOwnership{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// IncomeStmt pulls income statement data. Available quarterly or
+// annually with the default being the last available quarter.
+func (c *Client) IncomeStmt(sym string, opts *IncomeStmtOpts) (*IncomeStmt, error) {
+	vs := url.Values{}
+	if opts != nil && opts.Period != "" {
+		vs.Set("period", opts.Period)
+	}
+	if opts != nil && opts.Last != "" {
+		vs.Set("last", opts.Last)
+	}
+	p := path.Join("stock", sym, "income")
+	v := IncomeStmt{}
+	err := c.get(p, &vs, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// InsiderRoster returns the top 10 insiders, with the most recent information.
+func (c *Client) InsiderRoster(sym string) (*InsiderRoster, error) {
+	p := path.Join("stock", sym, "insider-roster")
+	v := InsiderRoster{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// InsiderSum returns aggregated insiders summary data for the last 6 months.
+func (c *Client) InsiderSum(sym string) (*InsiderSum, error) {
+	p := path.Join("stock", sym, "insider-summary")
+	v := InsiderSum{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// InsiderTXN returns aggregated insiders summary data for the last 6 months.
+func (c *Client) InsiderTXN(sym string) (*InsiderTXN, error) {
+	p := path.Join("stock", sym, "insider-transactions")
+	v := InsiderTXN{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// InstlOwnership returns aggregated insiders summary data for the last 6 months.
+func (c *Client) InstlOwnership(sym string) (*InstlOwnership, error) {
+	p := path.Join("stock", sym, "institutional-ownership")
+	v := InstlOwnership{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// IntradayPrices returns aggregated intraday prices in one minute buckets.
+func (c *Client) IntradayPrices(sym string) (*IntradayPrices, error) {
+	p := path.Join("stock", sym, "intraday-prices")
+	v := IntradayPrices{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// IPOCalendar returns aggregated intraday prices in one minute buckets.
+func (c *Client) IPOCalendar() (*IPOCalendar, error) {
+	p := path.Join("stock", "market", "intraday-prices")
+	v := IPOCalendar{}
 	err := c.get(p, nil, &v)
 	if err != nil {
 		return nil, err

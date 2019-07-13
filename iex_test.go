@@ -103,3 +103,48 @@ func TestFundOwnership(t *testing.T) {
 	}
 	t.Logf("got:\t%v", got)
 }
+
+func TestIncomeStmt(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.IncomeStmt("aapl", nil)
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestInsiderRoster(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.InsiderRoster("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestInsiderSum(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.InsiderSum("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestInsiderTXN(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.InsiderTXN("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestInstlOwnership(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.InstlOwnership("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
