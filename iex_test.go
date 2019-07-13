@@ -148,3 +148,146 @@ func TestInstlOwnership(t *testing.T) {
 	}
 	t.Logf("got:\t%v", got)
 }
+
+func TestIPOCal(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.IPOCal(IPOCalTypeToday)
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestKeyStats(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.KeyStats("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestLgstTrades(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.LgstTrades("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestList(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.List(ListGainers, nil)
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestLogo(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.Logo("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestMarketVol(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.MarketVol()
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestNews(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.News("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestOHLC(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.OHLC("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+func TestPeers(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.Peers("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestPrevDayPrice(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.PrevDayPrice("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestPrice(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.Price("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestPriceTgt(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.PriceTgt("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestQuote(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.Quote("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestSecPerf(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.SecPerf()
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestSplits(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.Splits("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}
+
+func TestVolByVenue(t *testing.T) {
+	c := NewClient(publishable, secret, nil)
+	got, err := c.VolByVenue("aapl")
+	if err != nil {
+		t.Errorf("error:\t%v", err.Error())
+	}
+	t.Logf("got:\t%v", got)
+}

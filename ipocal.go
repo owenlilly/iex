@@ -1,10 +1,10 @@
 package iex
 
-// IPOCalendar returns a list of upcoming or today IPOs scheduled for the
+// IPOCal returns a list of upcoming or today IPOs scheduled for the
 // current and next month. The response is split into two structures:
 // rawData and viewData. rawData represents all available data for an IPO.
 // viewData represents data structured for display to a user.
-type IPOCalendar struct {
+type IPOCal struct {
 	RawData []struct {
 		Symbol                 string   `json:"symbol"`
 		CompanyName            string   `json:"companyName"`
@@ -36,7 +36,7 @@ type IPOCalendar struct {
 		LockupPeriodExpiration string   `json:"lockupPeriodExpiration"`
 		QuietPeriodExpiration  string   `json:"quietPeriodExpiration"`
 		Revenue                uint64   `json:"revenue"`
-		NetIncome              uint64   `json:"netIncome"`
+		NetIncome              int64    `json:"netIncome"`
 		TotalAssets            uint64   `json:"totalAssets"`
 		TotalLiabilities       uint64   `json:"totalLiabilities"`
 		StockholderEquity      uint64   `json:"stockholderEquity"`

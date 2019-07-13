@@ -12,16 +12,23 @@ import (
 
 // Constants
 const (
-	PeriodAnnual  = "annual"
-	PeriodQuarter = "quarter"
-	Range5Y       = "5y"
-	Range2Y       = "2y"
-	Range1Y       = "1y"
-	RangeYTD      = "ytd"
-	Range6M       = "6m"
-	Range3M       = "3m"
-	Range1M       = "1m"
-	RangeNext     = "next"
+	IPOCalTypeToday    = "today-ipos"
+	IPOCalTypeUpcoming = "upcoming-ipos"
+	ListMostActive     = "mostactive"
+	ListGainers        = "gainers"
+	ListLosers         = "losers"
+	ListIEXVolume      = "iexvolume"
+	ListIEXPercent     = "iexpercent"
+	PeriodAnnual       = "annual"
+	PeriodQuarter      = "quarter"
+	Range5Y            = "5y"
+	Range2Y            = "2y"
+	Range1Y            = "1y"
+	RangeYTD           = "ytd"
+	Range6M            = "6m"
+	Range3M            = "3m"
+	Range1M            = "1m"
+	RangeNext          = "next"
 )
 
 // Client is an IEX client.
@@ -222,6 +229,9 @@ func (c *Client) EarningsToday() (*EarningsToday, error) {
 
 // Estimates provides the latest consensus estimate for the next fiscal period.
 func (c *Client) Estimates(sym string) (*Estimates, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
 	p := path.Join("stock", sym, "estimates")
 	v := Estimates{}
 	err := c.get(p, nil, &v)
@@ -236,6 +246,9 @@ func (c *Client) Estimates(sym string) (*Estimates, error) {
 // investment firms, and other large entities that manage funds on behalf of
 // others.
 func (c *Client) FundOwnership(sym string) (*FundOwnership, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
 	p := path.Join("stock", sym, "fund-ownership")
 	v := FundOwnership{}
 	err := c.get(p, nil, &v)
@@ -248,6 +261,10 @@ func (c *Client) FundOwnership(sym string) (*FundOwnership, error) {
 // IncomeStmt pulls income statement data. Available quarterly or
 // annually with the default being the last available quarter.
 func (c *Client) IncomeStmt(sym string, opts *IncomeStmtOpts) (*IncomeStmt, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
+	p := path.Join("stock", sym, "income")
 	vs := url.Values{}
 	if opts != nil && opts.Period != "" {
 		vs.Set("period", opts.Period)
@@ -255,7 +272,6 @@ func (c *Client) IncomeStmt(sym string, opts *IncomeStmtOpts) (*IncomeStmt, erro
 	if opts != nil && opts.Last != "" {
 		vs.Set("last", opts.Last)
 	}
-	p := path.Join("stock", sym, "income")
 	v := IncomeStmt{}
 	err := c.get(p, &vs, &v)
 	if err != nil {
@@ -266,6 +282,9 @@ func (c *Client) IncomeStmt(sym string, opts *IncomeStmtOpts) (*IncomeStmt, erro
 
 // InsiderRoster returns the top 10 insiders, with the most recent information.
 func (c *Client) InsiderRoster(sym string) (*InsiderRoster, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
 	p := path.Join("stock", sym, "insider-roster")
 	v := InsiderRoster{}
 	err := c.get(p, nil, &v)
@@ -277,6 +296,9 @@ func (c *Client) InsiderRoster(sym string) (*InsiderRoster, error) {
 
 // InsiderSum returns aggregated insiders summary data for the last 6 months.
 func (c *Client) InsiderSum(sym string) (*InsiderSum, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
 	p := path.Join("stock", sym, "insider-summary")
 	v := InsiderSum{}
 	err := c.get(p, nil, &v)
@@ -288,6 +310,9 @@ func (c *Client) InsiderSum(sym string) (*InsiderSum, error) {
 
 // InsiderTXN returns aggregated insiders summary data for the last 6 months.
 func (c *Client) InsiderTXN(sym string) (*InsiderTXN, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
 	p := path.Join("stock", sym, "insider-transactions")
 	v := InsiderTXN{}
 	err := c.get(p, nil, &v)
@@ -297,8 +322,12 @@ func (c *Client) InsiderTXN(sym string) (*InsiderTXN, error) {
 	return &v, nil
 }
 
-// InstlOwnership returns aggregated insiders summary data for the last 6 months.
+// InstlOwnership returns the top 10 institutional holders, defined as buy-
+// side or sell-side firms.
 func (c *Client) InstlOwnership(sym string) (*InstlOwnership, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
 	p := path.Join("stock", sym, "institutional-ownership")
 	v := InstlOwnership{}
 	err := c.get(p, nil, &v)
@@ -310,6 +339,9 @@ func (c *Client) InstlOwnership(sym string) (*InstlOwnership, error) {
 
 // IntradayPrices returns aggregated intraday prices in one minute buckets.
 func (c *Client) IntradayPrices(sym string) (*IntradayPrices, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
 	p := path.Join("stock", sym, "intraday-prices")
 	v := IntradayPrices{}
 	err := c.get(p, nil, &v)
@@ -319,10 +351,235 @@ func (c *Client) IntradayPrices(sym string) (*IntradayPrices, error) {
 	return &v, nil
 }
 
-// IPOCalendar returns aggregated intraday prices in one minute buckets.
-func (c *Client) IPOCalendar() (*IPOCalendar, error) {
-	p := path.Join("stock", "market", "intraday-prices")
-	v := IPOCalendar{}
+// IPOCal returns a list of upcoming or today IPOs scheduled for the current
+// and next month. The response is split into two structures: rawData and
+// viewData. rawData represents all available data for an IPO. viewData
+// represents data structured for display to a user.
+func (c *Client) IPOCal(t string) (*IPOCal, error) {
+	p := path.Join("stock", "market")
+	switch t {
+	case IPOCalTypeToday:
+		p = path.Join(p, IPOCalTypeToday)
+	case IPOCalTypeUpcoming:
+		p = path.Join(p, IPOCalTypeUpcoming)
+	default:
+		return nil, errors.New("invalid argument: t")
+	}
+	v := IPOCal{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// KeyStats ...
+func (c *Client) KeyStats(sym string) (*KeyStats, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
+	p := path.Join("stock", sym, "stats")
+	v := KeyStats{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// LgstTrades returns 15 minute delayed, last sale eligible trades.
+func (c *Client) LgstTrades(sym string) (*LgstTrades, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
+	p := path.Join("stock", sym, "largest-trades")
+	v := LgstTrades{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// List ...
+func (c *Client) List(t string, opts *ListOpts) (*List, error) {
+	p := path.Join("stock", t)
+	switch t {
+	case ListMostActive, ListGainers, ListLosers, ListIEXPercent, ListIEXVolume:
+		p = path.Join(p, t)
+	default:
+		return nil, errors.New("invalid argument: t")
+	}
+	vs := url.Values{}
+	if opts != nil && opts.DisplayPercent {
+		vs.Set("displayPercent", "true")
+	}
+	if opts != nil && opts.ListLimit > 0 {
+		vs.Set("listLimit", strconv.FormatUint(opts.ListLimit, 10))
+	}
+	v := List{}
+	err := c.get(p, &vs, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// Logo ...
+func (c *Client) Logo(sym string) (*Logo, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
+	p := path.Join("stock", sym, "logo")
+	v := Logo{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// MarketVol ...
+func (c *Client) MarketVol() (*MarketVol, error) {
+	p := path.Join("stock", "market", "volume")
+	v := MarketVol{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// News ...
+func (c *Client) News(sym string) (*News, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
+	p := path.Join("stock", sym, "volume")
+	v := News{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// OHLC ...
+func (c *Client) OHLC(sym string) (*OHLC, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
+	p := path.Join("stock", sym, "volume")
+	v := OHLC{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// Peers ...
+func (c *Client) Peers(sym string) (*Peers, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
+	p := path.Join("stock", sym, "peers")
+	v := Peers{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// PrevDayPrice ...
+func (c *Client) PrevDayPrice(sym string) (*PrevDayPrice, error) {
+	if sym == "" {
+		sym = "market"
+	}
+	p := path.Join("stock", sym, "previous")
+	v := PrevDayPrice{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// Price ...
+func (c *Client) Price(sym string) (*Price, error) {
+	if sym == "" {
+		sym = "market"
+	}
+	p := path.Join("stock", sym, "previous")
+	var v Price
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// PriceTgt ...
+func (c *Client) PriceTgt(sym string) (*PriceTgt, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
+	p := path.Join("stock", sym, "previous")
+	v := PriceTgt{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// Quote ...
+func (c *Client) Quote(sym string) (*Quote, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
+	p := path.Join("stock", sym, "previous")
+	v := Quote{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// SecPerf ...
+func (c *Client) SecPerf() (*SecPerf, error) {
+	p := path.Join("stock", "market", "sector-performance")
+	v := SecPerf{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// Splits ...
+func (c *Client) Splits(sym string) (*Splits, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
+	p := path.Join("stock", sym, "splits")
+	v := Splits{}
+	err := c.get(p, nil, &v)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+// VolByVenue ...
+func (c *Client) VolByVenue(sym string) (*VolByVenue, error) {
+	if sym == "" {
+		return nil, errors.New("invalid argument: sym")
+	}
+	p := path.Join("stock", sym, "volume-by-venue")
+	v := VolByVenue{}
 	err := c.get(p, nil, &v)
 	if err != nil {
 		return nil, err
