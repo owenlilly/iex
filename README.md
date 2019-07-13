@@ -17,7 +17,10 @@ See [GoDoc](https://godoc.org/github.com/go-iex/iex).
 
 ## Contributing
 
-> Contributing should include sections related to contributor guidelines, standards, development methodologies, and style guides.
+There are currently two ways to contribute to the project;
+
+* [Create an Issue](https://help.github.com/en/articles/creating-an-issue)
+* [Create a Pull Request](https://help.github.com/en/articles/creating-a-pull-request)
 
 ## License
 
