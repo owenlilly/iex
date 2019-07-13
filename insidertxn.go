@@ -1,7 +1,7 @@
 package iex
 
-// InsiderTXN ...
-type InsiderTXN []struct {
+// InsiderTxn ...
+type InsiderTxn []struct {
 	EffectiveDate uint64  `json:"effectiveDate"`
 	FullName      string  `json:"fullName"`
 	ReportedTitle string  `json:"reportedTitle"`

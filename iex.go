@@ -308,13 +308,13 @@ func (c *Client) InsiderSum(sym string) (*InsiderSum, error) {
 	return &v, nil
 }
 
-// InsiderTXN returns aggregated insiders summary data for the last 6 months.
-func (c *Client) InsiderTXN(sym string) (*InsiderTXN, error) {
+// InsiderTxn returns aggregated insiders summary data for the last 6 months.
+func (c *Client) InsiderTxn(sym string) (*InsiderTxn, error) {
 	if sym == "" {
 		return nil, errors.New("invalid argument: sym")
 	}
 	p := path.Join("stock", sym, "insider-transactions")
-	v := InsiderTXN{}
+	v := InsiderTxn{}
 	err := c.get(p, nil, &v)
 	if err != nil {
 		return nil, err

@@ -131,9 +131,9 @@ func TestInsiderSum(t *testing.T) {
 	t.Logf("got:\t%v", got)
 }
 
-func TestInsiderTXN(t *testing.T) {
+func TestInsiderTxn(t *testing.T) {
 	c := NewClient(publishable, secret, nil)
-	got, err := c.InsiderTXN("aapl")
+	got, err := c.InsiderTxn("aapl")
 	if err != nil {
 		t.Errorf("error:\t%v", err.Error())
 	}
