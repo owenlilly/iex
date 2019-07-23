@@ -13,7 +13,7 @@ go get -u github.com/go-iex/iex
 
 ## Usage
 
-See [GoDoc](https://godoc.org/github.com/go-iex/iex).
+See [GoDoc](https://godoc.org/github.com/go-iex/iex)
 
 ## Contributing
 
