@@ -1,6 +1,8 @@
+This repo is a fork of [github.com/go-iex/iex](https://github.com/owenlilly/iex), special thanks to Chantz Large.
+
 [//]: # (source:https://medium.com/@chantzlarge/how-to-write-a-readme-file-aa12c191e70b)
 
-# go-iex/iex
+# owenlilly/iex
 
 IEX Cloud is a platform that makes financial data and services accessible to
 everyone. For more information about the API, see the [IEX Cloud documentation](https://iexcloud.io/docs/api).
@@ -8,12 +10,12 @@ everyone. For more information about the API, see the [IEX Cloud documentation](
 ## Installation
 
 ```text
-go get -u github.com/go-iex/iex
+go get -u github.com/owenlilly/iex
 ```
 
 ## Usage
 
-See [GoDoc](https://godoc.org/github.com/go-iex/iex)
+See [GoDoc](https://godoc.org/github.com/owenlilly/iex)
 
 ## Contributing
 
@@ -27,7 +29,7 @@ There are currently two ways to contribute to the project;
 ```text
 MIT License
 
-Copyright (c) 2019 Chantz Large
+Copyright (c) 2019 Owen Lilly
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
