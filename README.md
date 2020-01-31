@@ -1,8 +1,6 @@
-This repo is a fork of [github.com/go-iex/iex](https://github.com/owenlilly/iex), special thanks to Chantz Large.
+This repo is a fork of [github.com/go-iex/iex](https://github.com/owenlilly/iex), special thanks to [Chantz Large](https://github.com/chantzlarge).
 
-[//]: # (source:https://medium.com/@chantzlarge/how-to-write-a-readme-file-aa12c191e70b)
-
-# owenlilly/iex
+# Overview
 
 IEX Cloud is a platform that makes financial data and services accessible to
 everyone. For more information about the API, see the [IEX Cloud documentation](https://iexcloud.io/docs/api).
