@@ -29,6 +29,9 @@ const (
 	Range3M            = "3m"
 	Range1M            = "1m"
 	RangeNext          = "next"
+
+	HostSandbox    = "sandbox.iexapis.com"
+	HostProduction = "cloud.iexapis.com"
 )
 
 // Client is an IEX client.
@@ -36,17 +39,22 @@ type Client struct {
 	publishable string
 	secret      string
 	version     string
+	host        string
 	httpClient  *http.Client
 }
 
 // NewClient returns IEX client.
-func NewClient(publishable string, secret string, httpClient *http.Client) *Client {
+func NewClient(publishable, secret, host string, httpClient *http.Client) *Client {
+	if host == "" {
+		host = HostSandbox
+	}
 	if httpClient == nil {
 		httpClient = &http.Client{}
 	}
 	return &Client{
 		publishable: publishable,
 		secret:      secret,
+		host:        host,
 		httpClient:  httpClient,
 	}
 }
@@ -58,7 +66,7 @@ func (c *Client) url(p string, vs *url.Values) *url.URL {
 	vs.Set("token", c.secret)
 	return &url.URL{
 		Scheme:   "https",
-		Host:     "sandbox.iexapis.com",
+		Host:     c.host,
 		Path:     path.Join("stable", p),
 		RawQuery: vs.Encode(),
 	}
